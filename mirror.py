@@ -12,7 +12,7 @@ from contextlib import contextmanager
 
 LOCALE_LOCK = threading.Lock()
 
-ui_locale = '' 
+ui_locale = ''
 time_format = 12
 date_format = "%b %d, %Y"
 xlarge_text_size = 94
@@ -39,8 +39,11 @@ class UserDetails(Frame):
         self.country = Label(self, font=('Helvetica', small_text_size), text=user.get('country'), fg="white", bg="black")
         self.country.pack(side=TOP, anchor=W)
     def getJSON(self):
-        user = json.load(open('user_details.json'))
-        return user
+        url = "https://localhost/mirror/data"
+        with urllib.request.urlopen(url) as url:
+            user = json.loads(url.read().decode())
+            print(user)
+            return user
 
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, bg='black')
@@ -108,29 +111,21 @@ class Clock(Frame):
 class Notification(Frame):
     def printUser(self, user):
         #print(user)
-        self.app = Label(self, font=('Helvetica', medium_text_size), text=user.get('app'), fg="white", bg="black")
-        self.app.pack(side=TOP, anchor=W)
-        self.msg = Label(self, font=('Helvetica', small_text_size), text=user.get('msg'), fg="white", bg="black")
-        self.msg.pack(side=TOP, anchor=W)
-        self.app2 = Label(self, font=('Helvetica', medium_text_size), text=user.get('app2'), fg="white", bg="black")
-        self.app2.pack(side=TOP, anchor=W)
-        self.msg2 = Label(self, font=('Helvetica', small_text_size), text=user.get('msg2'), fg="white", bg="black")
-        self.msg2.pack(side=TOP, anchor=W)
-        self.app3 = Label(self, font=('Helvetica', medium_text_size), text=user.get('app3'), fg="white", bg="black")
-        self.app3.pack(side=TOP, anchor=W)
-        self.msg3 = Label(self, font=('Helvetica', small_text_size), text=user.get('msg3'), fg="white", bg="black")
-        self.msg3.pack(side=TOP, anchor=W)
+        for user in users:
+            self.app = Label(self, font=('Helvetica', medium_text_size), text=user.get('app'), fg="white", bg="black")
+            self.app.pack(side=TOP, anchor=W)
+            self.msg = Label(self, font=('Helvetica', small_text_size), text=user.get('msg'), fg="white", bg="black")
+            self.msg.pack(side=TOP, anchor=W)
 
-        
     def getJSON(self):
         user = json.load(open('nots.json'))
-        return user
+        return user['nots']
 
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, bg='black')
         #TODO get from http prot
         self.printUser(self.getJSON())
-        
+
 
 
 class  MirrorUI:
