@@ -41,9 +41,9 @@ class UserDetails(Frame):
     def getJSON(self):
         url = "https://localhost/mirror/data"
         with urllib.request.urlopen(url) as url:
-            user = json.loads(url.read().decode())
-            print(user)
-            return user
+        user = json.loads(url.read().decode())
+        print(user)
+        return user
 
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, bg='black')

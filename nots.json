@@ -3,10 +3,10 @@
     "app": "Whatsapp",
     "msg": "You have received a message"
   }, {
-    "app": "Whatsapp",
-    "msg": "You have received a message"
+    "app": "Gmail",
+    "msg": "Inbox 97 Mails"
   }, {
-    "app": "Whatsapp",
-    "msg": "You have received a message"
+    "app": "Facebook",
+    "msg": "You have few mentions"
   }]
 }
