@@ -1,9 +1,13 @@
-{
-        "app": "Whatsapp",
-        "msg": "You have received a message",
-        "app2": "Facebook",
-        "msg2": "You have a mention",
-        "app3": "Gmail",
-        "msg3": "Inbox 97"
-                
-}
+[{
+    "app": "Whatsapp",
+    "msg": "You have received a message"
+  },
+  {
+    "app": "Twitter",
+    "msg": "You have a mention"
+  },
+  {
+    "app": "Gmail",
+    "msg": "Inbox 97"
+  }
+]

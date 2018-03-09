@@ -2,6 +2,7 @@
 from tkinter import *
 import locale
 import threading
+from threading import Timer
 import time
 import urllib
 import urllib.parse
@@ -12,7 +13,7 @@ from contextlib import contextmanager
 
 LOCALE_LOCK = threading.Lock()
 
-ui_locale = '' 
+ui_locale = ''
 time_format = 12
 date_format = "%b %d, %Y"
 xlarge_text_size = 94
@@ -32,15 +33,25 @@ def setlocale(name):
 
 
 class UserDetails(Frame):
+
+    def updateDetails(self):
+        user = self.getJSON()
+        self.name.config(text=user.get('name'))
+        self.country.config(text=user.get('country'))
+        Timer(1.0, self.updateDetails).start()
+
     def printUser(self, user):
-        #print(user)
         self.name = Label(self, font=('Helvetica', medium_text_size), text=user.get('name'), fg="white", bg="black")
         self.name.pack(side=TOP, anchor=W)
         self.country = Label(self, font=('Helvetica', small_text_size), text=user.get('country'), fg="white", bg="black")
         self.country.pack(side=TOP, anchor=W)
+        self.updateDetails()
+
     def getJSON(self):
-        user = json.load(open('user_details.json'))
-        return user
+	#TODO run for every 2 seconds
+        with urllib.request.urlopen("http://localhost:3000/mirror/data") as url:
+            user = json.loads(url.read().decode())
+            return user
 
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, bg='black')
@@ -48,7 +59,6 @@ class UserDetails(Frame):
         self.country = ''
         #TODO get from http prot
         self.printUser(self.getJSON())
-
 
 
 class Temperature(Frame):
@@ -106,31 +116,22 @@ class Clock(Frame):
             self.timeLbl.after(200, self.tick)
 
 class Notification(Frame):
-    def printUser(self, user):
-        #print(user)
-        self.app = Label(self, font=('Helvetica', medium_text_size), text=user.get('app'), fg="white", bg="black")
-        self.app.pack(side=TOP, anchor=W)
-        self.msg = Label(self, font=('Helvetica', small_text_size), text=user.get('msg'), fg="white", bg="black")
-        self.msg.pack(side=TOP, anchor=W)
-        self.app2 = Label(self, font=('Helvetica', medium_text_size), text=user.get('app2'), fg="white", bg="black")
-        self.app2.pack(side=TOP, anchor=W)
-        self.msg2 = Label(self, font=('Helvetica', small_text_size), text=user.get('msg2'), fg="white", bg="black")
-        self.msg2.pack(side=TOP, anchor=W)
-        self.app3 = Label(self, font=('Helvetica', medium_text_size), text=user.get('app3'), fg="white", bg="black")
-        self.app3.pack(side=TOP, anchor=W)
-        self.msg3 = Label(self, font=('Helvetica', small_text_size), text=user.get('msg3'), fg="white", bg="black")
-        self.msg3.pack(side=TOP, anchor=W)
+    def printNotifications(self, nots):
+        for noti in nots:
+	        self.app = Label(self, font=('Helvetica', medium_text_size), text=noti.get('app'), fg="white", bg="black")
+	        self.app.pack(side=TOP, anchor=NW)
+	        self.msg = Label(self, font=('Helvetica', small_text_size), text=noti.get('msg'), fg="white", bg="black")
+	        self.msg.pack(side=TOP, anchor=NW)
 
-        
     def getJSON(self):
-        user = json.load(open('nots.json'))
-        return user
+        nots = json.load(open('nots.json'))
+        return nots
 
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, bg='black')
         #TODO get from http prot
-        self.printUser(self.getJSON())
-        
+        self.printNotifications(self.getJSON())
+
 
 
 class  MirrorUI:
